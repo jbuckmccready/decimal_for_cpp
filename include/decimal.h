@@ -41,6 +41,9 @@
 #include <sstream>
 #include <locale>
 
+// Qt includes
+#include <QString>
+
 // --> include headers for limits and int64_t
 
 #ifndef DEC_NO_CPP11
@@ -601,6 +604,11 @@ public:
     }
     explicit decimal(const std::string &value) {
         fromString(value, *this);
+    }
+    // QString constructor
+    explicit decimal(const QString &value) {
+      const auto stdStr = value.toStdString();
+      fromString(stdStr, *this);
     }
 
     ~decimal() {
@@ -1452,6 +1460,18 @@ void fromString(const std::string &str, T &out) {
     std::istringstream is(str);
     is >> out;
 }
+
+// Qt extensions
+template<int prec, typename roundPolicy>
+QString toQString(const decimal<prec, roundPolicy> &arg) {
+  return QString::fromStdString(toString(arg));
+}
+
+template<typename T>
+void fromQString(const QString &str, T &out) {
+  fromString(str.toStdString(), out);
+}
+
 
 } // namespace
 #endif // _DECIMAL_H__
