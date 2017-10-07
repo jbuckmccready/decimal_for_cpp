@@ -65,7 +65,7 @@
 // --> define DEC_MAX_INTxx, DEC_MIN_INTxx if required
 
 #ifndef DEC_NAMESPACE
-#define DEC_NAMESPACE dec
+#define DEC_NAMESPACE deci
 #endif // DEC_NAMESPACE
 
 #ifndef DEC_EXTERNAL_LIMITS
