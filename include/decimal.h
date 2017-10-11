@@ -1191,7 +1191,10 @@ decimal<Prec, RoundPolicy> decimal_cast(const char (&arg)[N]) {
 /// aaaa is stream of digits after decimal point
 template<class decimal_type, typename StreamType>
 void toStream(const decimal_type &arg, StreamType &output) {
-    using namespace std;
+    using std::use_facet;
+    using std::numpunct;
+    using std::setfill;
+    using std::right;
 
     int64 before, after;
     int sign;
@@ -1228,7 +1231,9 @@ namespace details {
 template<typename StreamType>
 bool parse_unpacked(StreamType &input, int &sign, int64 &before, int64 &after,
         int &decimalDigits) {
-    using namespace std;
+    using std::numpunct;
+    using std::has_facet;
+    using std::use_facet;
 
     enum StateEnum {
         IN_SIGN, IN_BEFORE_FIRST_DIG, IN_BEFORE_DEC, IN_AFTER_DEC, IN_END
@@ -1401,9 +1406,8 @@ bool fromStream(StreamType &input, decimal_type &output) {
 template<int prec, typename roundPolicy>
 std::string &toString(const decimal<prec, roundPolicy> &arg,
         std::string &output) {
-    using namespace std;
 
-    ostringstream out;
+    std::ostringstream out;
     toStream(arg, out);
     output = out.str();
     return output;
