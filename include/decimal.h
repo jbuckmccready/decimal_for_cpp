@@ -1191,10 +1191,6 @@ decimal<Prec, RoundPolicy> decimal_cast(const char (&arg)[N]) {
 /// aaaa is stream of digits after decimal point
 template<class decimal_type, typename StreamType>
 void toStream(const decimal_type &arg, StreamType &output) {
-    using std::use_facet;
-    using std::numpunct;
-    using std::setfill;
-    using std::right;
 
     int64 before, after;
     int sign;
@@ -1216,11 +1212,11 @@ void toStream(const decimal_type &arg, StreamType &output) {
         output << "-";
 
     const char dec_point =
-            use_facet<numpunct<char> >(output.getloc()).decimal_point();
+            std::use_facet<std::numpunct<char> >(output.getloc()).decimal_point();
     output << before;
     if (arg.getDecimalPoints() > 0) {
         output << dec_point;
-        output << setw(arg.getDecimalPoints()) << setfill('0') << right
+        output << std::setw(arg.getDecimalPoints()) << std::setfill('0') << std::right
                 << after;
     }
 }
@@ -1231,16 +1227,13 @@ namespace details {
 template<typename StreamType>
 bool parse_unpacked(StreamType &input, int &sign, int64 &before, int64 &after,
         int &decimalDigits) {
-    using std::numpunct;
-    using std::has_facet;
-    using std::use_facet;
 
     enum StateEnum {
         IN_SIGN, IN_BEFORE_FIRST_DIG, IN_BEFORE_DEC, IN_AFTER_DEC, IN_END
     } state = IN_SIGN;
-    const numpunct<char> *facet =
-            has_facet<numpunct<char> >(input.getloc()) ?
-                    &use_facet<numpunct<char> >(input.getloc()) : NULL;
+    const std::numpunct<char> *facet =
+            std::has_facet<std::numpunct<char> >(input.getloc()) ?
+                    &std::use_facet<std::numpunct<char> >(input.getloc()) : NULL;
     const char dec_point = (facet != NULL) ? facet->decimal_point() : '.';
     const bool thousands_grouping =
             (facet != NULL) ? (!facet->grouping().empty()) : false;
